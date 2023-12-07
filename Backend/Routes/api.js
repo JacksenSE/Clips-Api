@@ -1,6 +1,5 @@
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcrypt');
 const express = require('express');
-const { body, validationResult } = require('express-validator');
 const db = require('../../db');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
@@ -8,6 +7,27 @@ const { User } = require('../../models');
 
 const router = express.Router();
 const upload = multer();
+
+function validateVideoUpload(req, res, next) {
+  const { title, category } = req.body;
+  const videoFile = req.file;
+
+  if (!title || !category || !videoFile) {
+    return res.status(400).json({ error: 'Title, category, and video file are required' });
+  }
+
+  next();
+}
+
+function validateUserRegistration(req, res, next) {
+  const { username, email, password } = req.body;
+
+  if (!username || !email || !password) {
+    return res.status(400).json({ error: 'Username, email, and password are required' });
+  }
+
+  next();
+}
 
 router.get('/videos', async (req, res) => {
   try {
@@ -23,10 +43,7 @@ router.get('/videos', async (req, res) => {
 router.post(
   '/videos',
   upload.single('video'),
-  [
-    body('title').notEmpty(),
-    body('category').notEmpty(),
-  ],
+  validateVideoUpload,
   async (req, res) => {
     try {
       const { title, category } = req.body;
@@ -49,18 +66,8 @@ router.post(
 
 router.post(
   '/register',
-  [
-    body('username').notEmpty(),
-    body('email').isEmail(),
-    body('password').notEmpty(),
-  ],
+  validateUserRegistration,
   async (req, res) => {
-    // Validate request body
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     try {
       const { username, email, password } = req.body;
 
