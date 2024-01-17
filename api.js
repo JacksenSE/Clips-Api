@@ -5,7 +5,18 @@ const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
 
-// Retrieve all videos endpoint
+const userController = require('./user_Controller');
+
+router.post('/register', function(req, res) {
+  userController.register(req, res); 
+});
+
+router.post('/login', function(req, res) {
+  userController.login(req, res); 
+});
+
+
+// Retrieve 
 router.get('/videos', async (req, res) => {
   try {
     const query = 'SELECT filename, title, author, category FROM videos';
@@ -19,13 +30,13 @@ router.get('/videos', async (req, res) => {
 
 const upload = multer();
 
-// Upload video endpoint
+// Upload 
 router.post('/videos', upload.single('video'), async (req, res) => {
   try {
     const { title, author, category } = req.body;
-    const videoFile = req.file.buffer; // Access the uploaded file's binary data
+    const videoFile = req.file.buffer; 
 
-    const filename = uuidv4(); // Generate a unique filename using UUIDv4
+    const filename = uuidv4(); 
 
     const query = 'INSERT INTO videos (filename, title, author, category, data) VALUES ($1, $2, $3, $4, $5)';
     const values = [filename, title, author, category, videoFile];
@@ -38,7 +49,7 @@ router.post('/videos', upload.single('video'), async (req, res) => {
   }
 });
 
-// Retrieve individual video endpoint
+// Retrieve 
 router.get('/videos/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
@@ -51,10 +62,14 @@ router.get('/videos/:filename', async (req, res) => {
     }
 
     const videoFile = result.rows[0].data;
+    const videoStream = new Readable();
+    videoStream.push(videoFile);
+    videoStream.push(null);
+
     res.setHeader('Content-Type', 'video/mp4');
-    res.send(videoFile);
+    videoStream.pipe(res);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: 'Error retrieving video' });
   }
 });
