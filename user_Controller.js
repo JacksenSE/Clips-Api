@@ -27,7 +27,7 @@ users.get('/:id', async (req, res) => {
 })
 
 // CREATE NEW users
-users.post('/Users', async (req, res) => {
+users.post('/signup', async (req, res) => {
     try{
         let { password, ...rest } = req.body;
         const user = await User.create({

@@ -2,16 +2,16 @@ const express = require('express');
 const db = require('./db');
 const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
-
+const { Readable} = require('stream');
 const router = express.Router();
 
 const userController = require('./user_Controller');
 
-router.post('/register', function(req, res) {
-  userController.register(req, res); 
+router.post('/api/signUp', function(req, res) {
+  userController.signUp(req, res); 
 });
 
-router.post('/login', function(req, res) {
+router.post('/api/login', function(req, res) {
   userController.login(req, res); 
 });
 
