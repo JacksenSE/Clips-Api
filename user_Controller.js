@@ -4,7 +4,7 @@ const db = require('./models')
 const { User } = db
 
 // get all the users
-users.get('', async (req,res) => {
+users.get('/signup/users', async (req,res) => {
     try {
         const foundUsers = await User.findAll()
         res.status(200).json(foundUsers)
@@ -27,7 +27,7 @@ users.get('/:id', async (req, res) => {
 })
 
 // CREATE NEW users
-users.post('', async (req, res) => {
+users.post('/signup/users', async (req, res) => {
     console.log("working")
     try{
         let { password, ...rest } = req.body;

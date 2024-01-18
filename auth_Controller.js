@@ -6,7 +6,7 @@ const { User } = db;
 
 const auth = express.Router();
 
-auth.post('/user', async (req, res) => {
+auth.post('/signup/user', async (req, res) => {
     try {
         let { password, ...rest } = req.body;
         const user = await User.create({
@@ -20,7 +20,7 @@ auth.post('/user', async (req, res) => {
     }
 });
 
-auth.post('/user', async (req, res) => {
+auth.post('/login/user', async (req, res) => {
     try {
         let user = await User.findOne({
             where: { email: req.body.email }
