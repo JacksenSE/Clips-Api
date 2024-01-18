@@ -2,7 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const apiRouter = require('./api');
-const signUpRouter = require('./user_Controller');
+const signupRouter = require('./user_Controller');
 const loginRouter = require('./user_Controller');
 const path = require('path');
 
@@ -15,8 +15,8 @@ app.use(cors());
 
 // Define API routes
 app.use('/api', apiRouter);
-app.use('/api/login', loginRouter);
-app.use('/api/signUp', signUpRouter);
+app.use('/login', loginRouter);
+app.use('/signup', signupRouter);
 // Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 
