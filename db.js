@@ -6,6 +6,7 @@ const pool = new Pool({
   database: 'clips',
   user: 'postgres',
   password: 'password',
+  dialect: 'postgres'
 });
 
 module.exports = pool;

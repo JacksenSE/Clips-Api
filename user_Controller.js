@@ -1,54 +1,24 @@
-const bcrypt = require('bcrypt')
-const users = require('express').Router()
-const db = require('./models')
-const { User } = db
+const bcrypt = require('bcrypt');
+const users = require('express').Router();
+const db = require('./models');
+const { User } = db;
 
-// get all the users
-users.get('/signup/users', async (req,res) => {
+// Get all users
+users.get('/', async (req, res) => {
     try {
-        const foundUsers = await User.findAll()
-        res.status(200).json(foundUsers)
+        const foundUsers = await User.findAll();
+        res.status(200).json(foundUsers);
     } catch (err) {
-        res.status(500).json('server error')
-        console.log(err)
+        res.status(500).json('Server error');
+        console.log(err);
     }
-})
-// get a users by id
+});
+
+// Get a user by id
 users.get('/:id', async (req, res) => {
     try {
         const foundUser = await User.findOne({
             where: { id: req.params.id },
-        })
-        res.status(200).json(foundUser)
-    } catch (err) {
-        res.status(500).send("Server error")
-        console.log(err)
-    }
-})
-
-// CREATE NEW users
-users.post('/signup/users', async (req, res) => {
-    console.log("working")
-    try{
-        let { password, ...rest } = req.body;
-        const user = await User.create({
-            ...rest,
-            password: await bcrypt.hash(password, 10)
-        })
-        res.json(user)
-
-    } catch (err){
-        res.status(500).send('server error')
-        console.log(err)
-    }
-})
-
-// UPDATE A users by id
-users.get('/:id', async (req, res) => {
-    try {
-        const userId = parseInt(req.params.id, 10); 
-        const foundUser = await User.findOne({
-            where: { id: userId },
         });
         res.status(200).json(foundUser);
     } catch (err) {
@@ -57,19 +27,49 @@ users.get('/:id', async (req, res) => {
     }
 });
 
-// DELETE users BY ID
+// Create a new user
+users.post('/signup/', async (req, res) => {
+    try {
+        let { password, ...rest } = req.body;
+        const user = await User.create({
+            ...rest,
+            password: await bcrypt.hash(password, 10),
+        });
+        res.json(user);
+    } catch (err) {
+        res.status(500).send('Server error');
+        console.log(err);
+    }
+});
+
+// Update a user by id
+users.put('/:id', async (req, res) => {
+    try {
+        const updatedUser = await User.update(req.body, {
+            where: { id: req.params.id },
+        });
+        res.status(200).json({
+            message: `User ${req.params.id} updated successfully`,
+        });
+    } catch (err) {
+        res.status(500).json("Server error");
+        console.log(err);
+    }
+});
+
+// Delete user by id
 users.delete('/:id', async (req, res) => {
     try {
         const deletedUser = await User.destroy({
-            where: { id: req.params.id }
-        })
+            where: { id: req.params.id },
+        });
         res.status(200).json({
-            message: `User ${req.params.id} deleted successfully`
-        })
+            message: `User ${req.params.id} deleted successfully`,
+        });
     } catch (err) {
-        res.status(500).json("server error")
-        console.log(err)
+        res.status(500).json("Server error");
+        console.log(err);
     }
-})
-module.exports = users
+});
 
+module.exports = users;

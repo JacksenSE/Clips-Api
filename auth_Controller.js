@@ -6,29 +6,31 @@ const { User } = db;
 
 const auth = express.Router();
 
-auth.post('/signup/user', async (req, res) => {
+// Signup route
+auth.post('/signup/', async (req, res) => {
     try {
         let { password, ...rest } = req.body;
         const user = await User.create({
             ...rest,
-            password: await bcrypt.hash(password, 10)
-        })
-        res.json(user)
+            password: await bcrypt.hash(password, 10),
+        });
+        res.json(user);
     } catch (err) {
-        res.status(500).send('server error')
-        console.log(err)
+        res.status(500).send('Server error');
+        console.log(err);
     }
 });
 
-auth.post('/login/user', async (req, res) => {
+// Login route
+auth.post('/login/', async (req, res) => {
     try {
         let user = await User.findOne({
-            where: { email: req.body.email }
+            where: { email: req.body.email },
         });
 
         if (!user) {
             res.status(404).json({
-                message: `Could not find a user with the provided email`
+                message: `Could not find a user with the provided email`,
             });
             return;
         }
@@ -36,7 +38,7 @@ auth.post('/login/user', async (req, res) => {
         const passwordMatch = await bcrypt.compare(req.body.password, user.password);
         if (!passwordMatch) {
             res.status(401).json({
-                message: `Invalid password`
+                message: `Invalid password`,
             });
             return;
         }
@@ -45,7 +47,7 @@ auth.post('/login/user', async (req, res) => {
         res.json({ user: user, token: token });
     } catch (error) {
         res.status(500).json({
-            message: `Server error: ${error.message}`
+            message: `Server error: ${error.message}`,
         });
     }
 });
