@@ -4,7 +4,7 @@ const db = require('./models');
 const { User } = db;
 
 // Get all users
-users.get('/', async (req, res) => {
+users.get('/api/login/', async (req, res) => {
     try {
         const foundUsers = await User.findAll();
         res.status(200).json(foundUsers);
@@ -28,7 +28,7 @@ users.get('/:id', async (req, res) => {
 });
 
 // Create a new user
-users.post('/signup/', async (req, res) => {
+users.post('/signup', async (req, res) => {
     try {
         let { password, ...rest } = req.body;
         const user = await User.create({
