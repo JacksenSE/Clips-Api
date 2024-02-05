@@ -1,10 +1,11 @@
 const bcrypt = require('bcrypt');
 const users = require('express').Router();
 const db = require('./models');
+
 const { User } = db;
 
 // Get all users
-users.get('/api/login/', async (req, res) => {
+users.get('/login/', async (req, res) => {
     try {
         const foundUsers = await User.findAll();
         res.status(200).json(foundUsers);
@@ -15,7 +16,7 @@ users.get('/api/login/', async (req, res) => {
 });
 
 // Get a user by id
-users.get('/:id', async (req, res) => {
+users.get('/login/:id', async (req, res) => {
     try {
         const foundUser = await User.findOne({
             where: { id: req.params.id },
@@ -28,7 +29,7 @@ users.get('/:id', async (req, res) => {
 });
 
 // Create a new user
-users.post('/signup', async (req, res) => {
+users.post('/', async (req, res) => {
     try {
         let { password, ...rest } = req.body;
         const user = await User.create({
@@ -43,22 +44,27 @@ users.post('/signup', async (req, res) => {
 });
 
 // Update a user by id
-users.put('/:id', async (req, res) => {
+users.put('/login/:id', async (req, res) => {
     try {
-        const updatedUser = await User.update(req.body, {
-            where: { id: req.params.id },
-        });
+        const { id } = req.params;
+        const { username, bio, profile_picture } = req.body;
+
+        const updatedUser = await User.update(
+            { username, bio, profile_picture },
+            { where: { id } }
+        );
+
         res.status(200).json({
-            message: `User ${req.params.id} updated successfully`,
+            message: `User ${id} updated successfully`,
         });
     } catch (err) {
+        console.error('Error updating user:', err);
         res.status(500).json("Server error");
-        console.log(err);
     }
 });
 
 // Delete user by id
-users.delete('/:id', async (req, res) => {
+users.delete('/login/:id', async (req, res) => {
     try {
         const deletedUser = await User.destroy({
             where: { id: req.params.id },

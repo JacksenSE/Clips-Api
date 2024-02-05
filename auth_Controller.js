@@ -24,7 +24,7 @@ auth.post('/signup', async (req, res) => {
 });
 
 // POST route for /api/login
-auth.post('/signup', async (req, res) => {
+auth.post('/login', async (req, res) => {
   try {
     let user = await User.findOne({
       where: { email: req.body.email },

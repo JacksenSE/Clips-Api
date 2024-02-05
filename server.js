@@ -5,6 +5,7 @@ const authRouter = require('./auth_Controller'); // Import auth router
 const apiRouter = require('./api');
 const profileRouter = require('./profileRouter');
 const loginRouter = require('./user_Controller')
+const pictureRouter = require('./pictureRouter');
 const path = require('path');
 
 const app = express();
@@ -14,10 +15,12 @@ require('dotenv').config();
 app.use(cors());
 app.use(express.json());
 // Define API routes
-app.use('/api/login/', loginRouter)
+app.use('/api/', profileRouter)
+app.use('/api/', loginRouter)
 app.use('/api/', apiRouter);
-app.use('/api/', authRouter); // Use auth router for authentication under /api/
-app.use('/api/', profileRouter);
+app.use('/api/', authRouter); 
+app.use('/api/', pictureRouter);
+app.use('/docs', express.static(path.join(__dirname, 'docs.html')));
 // Serve static files
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use((err, req, res, next) => {

@@ -4,7 +4,7 @@ const profileRouter = express.Router();
 const { authenticateToken } = require('./middleware'); // Create middleware for authenticating tokens
 const { User } = require('./models');
 // Fetch user profile data
-profileRouter.get('/:userId', authenticateToken, async (req, res) => {
+profileRouter.get('/profile', authenticateToken, async (req, res) => {
   try {
     const userId = req.params.userId;
     // Fetch user data based on userId (you might want to validate the userId)
@@ -21,7 +21,7 @@ profileRouter.get('/:userId', authenticateToken, async (req, res) => {
 });
 
 // Update user profile data
-profileRouter.put('/:userId', authenticateToken, async (req, res) => {
+profileRouter.put('/profile', authenticateToken, async (req, res) => {
   try {
     const userId = req.params.userId;
     // Update user data based on userId

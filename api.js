@@ -57,6 +57,24 @@ router.get('/videos/:filename', async (req, res) => {
     console.log(error);
     res.status(500).json({ error: 'Error retrieving video' });
   }
+
+  router.delete('/videos/:filename', async (req, res) => {
+    try {
+      const { filename } = req.params;
+      const query = 'DELETE FROM videos WHERE filename = $1';
+      const result = await db.query(query, [filename]);
+  
+      if (result.rowCount === 0) {
+        res.status(404).json({ error: 'Video not found' });
+        return;
+      }
+  
+      res.json({ message: 'Video deleted successfully' });
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ error: 'Error deleting video' });
+    }
+  });
 });
 
 module.exports = router;
